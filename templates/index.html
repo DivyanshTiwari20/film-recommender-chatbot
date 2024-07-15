@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Film Information Chatbot</title>
+    <style>
+        #chat-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Film Information Chatbot</h1>
+    <div id="chat-container"></div>
+    <input type="text" id="user-input" placeholder="Ask about films...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+    function sendMessage() {
+        var userInput = document.getElementById('user-input');
+        var message = userInput.value;
+        userInput.value = '';
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({message: message}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            var chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML += '<p><strong>You:</strong> ' + message + '</p>';
+            chatContainer.innerHTML += '<p><strong>Bot:</strong> ' + data.response.replace(/\n/g, '<br>') + '</p>';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+    }
+    </script>
+</body>
+</html>
